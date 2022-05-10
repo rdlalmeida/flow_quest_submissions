@@ -24,7 +24,7 @@ Q6. Here's the corrected code with comments explaining what was wrong with the o
             }
         }
 
-        pub fun createJacob(): @Jacob {     // Resources require the '@' operator when referrenced within a function to denote that the target object is indeed a Resource
+        pub fun createJacob(): @Jacob {     // Resources require the '@' operator when referenced within a function to denote that the target object is indeed a Resource
             let myJacob <- create Jacob()   // Was missing the '<-' operator required for Resource creation, as well as the 'create' keyword while invoking the Resource's constructor
             return <- myJacob               // Missed the '<-' operator required to return the Resource created with the previous instruction. 
         }
