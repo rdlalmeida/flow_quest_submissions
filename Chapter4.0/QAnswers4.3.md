@@ -1,0 +1,14 @@
+Q1.
+
+Collection are used to abstract and simplify NFTs management in Flow contracts. To be accessible, an NFT saved in a contract requires a public storage path and this path requires a unique identifier in it, which implies that every new NFT saved into a given contract requires a unique element to create a unique storage path, which is not practical and gets too confusing after a while. Collections allow to abstract all this organizing logic.
+Second, saving NFTs into specific storage path removes the possibility of receiving NFTs into that contract from an external user, since they are simply not allowed to store stuff in our contracts at will. Collections, since they are established in a single storage path, can be used for this kind of access by implementing deposit functions that are externally available but internally save the received NFT into the Collection storage path without exposing it or allowing direct manipulation of our contract storage from external users.
+
+Q2.
+
+To prevent memory wasting in the blockchain, and simply to avoid "untethered" Resources on the blockchain, i.e., nested resources whose "nest" or containing resource is no longer available (I'm assuming at this point), nested Resources require a destructor function to be present in order to guarantee that if the outer/container resource is destroyed, the nested ones do have a destructor function that can be called to enact a "clean" deletion, i.e., without leaving orphaned Resources all over the Flow blockchain.
+
+Q3.
+
+#1 - That does not sound like a good idea. Restricting NFT minting in this context is simple: implement the NFT using an interface, as it is already done, but put the <code>createNFT</code> function inside the Resource implementation (which is done using that Interface) in order to obfuscate it from external access. Another possible option is to simply change the access control of the <code>createNFT</code> function from <code>pub (access(all))</code> to something more restrictive, even <code>priv</code>. 
+
+#2 - This question is similar to when References where introduced. Its the same scenario: instead of moving the Resource from one point to another to access it, even if just for reading purposes, it is more practical to retrieve a Reference to it instead. The question here is, does Cadence provides a similar mechanism for Collections (a Reference to a Collection which in turn allows to retrieve References to the NFTs that it contains) or can we use References in Collections just as well as we do with Resources? I shouldn't answer a question with another question, but I'm still finding out about Cadence's full capabilities.
