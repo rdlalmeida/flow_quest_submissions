@@ -35,7 +35,7 @@ Q1.
           // Extract the key to use from the pet's name
           let key = pet.name
 
-          // Store any existing old pet referrenced with the key to a new constant and store the provided Pet in that position instead
+          // Store any existing old pet referenced with the key to a new constant and store the provided Pet in that position instead
           let anyExistingPet <- self.petDict[key] <- pet
           // Destroy any old pet retrieved
           destroy anyExistingPet

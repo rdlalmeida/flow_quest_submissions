@@ -43,4 +43,4 @@ Q2.
     
 Q3.
 
-References are a handy way to keep the operational overhead on the Flow blockchain to a minimum while also adding a layer of securtity that allows access to information contained in a Resource without compromizing (moving or copying) the Resource itself. References get all the information contained in a Resource but without providing access to it.
+References are a handy way to keep the operational overhead on the Flow blockchain to a minimum while also adding a layer of security that allows access to information contained in a Resource without compromising (moving or copying) the Resource itself. References get all the information contained in a Resource but without providing access to it.
