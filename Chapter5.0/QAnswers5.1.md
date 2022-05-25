@@ -12,206 +12,214 @@ Q2.
 
 Contract code:
 
-        pub contract TryingEvents{
-            // A simple event to be triggered upon calling another function later on
-            pub event deadMonster(name: String)
-            pub event monsterStillAlive(name: String)
+```javascript
+pub contract TryingEvents{
+	// A simple event to be triggered upon calling another function later on
+	pub event deadMonster(name: String)
+	pub event monsterStillAlive(name: String)
 
 
-            pub fun createMonstrosity(name: String): @Frankenstein {
-                return <- create Frankenstein(name: name)
-            }
+	pub fun createMonstrosity(name: String): @Frankenstein {
+		return <- create Frankenstein(name: name)
+	}
 
-            pub resource Frankenstein{
-                pub var name: String
-                pub var isAlive: Bool
+	pub resource Frankenstein{
+		pub var name: String
+		pub var isAlive: Bool
 
-                init(name: String) {
-                    self.name = name
-                    self.isAlive = true
-                }
+		init(name: String) {
+			self.name = name
+			self.isAlive = true
+		}
 
-                pub fun killTheAbomination() {
-                    self.isAlive = false
-                }
+		pub fun killTheAbomination() {
+			self.isAlive = false
+		}
 
-                pub fun checkPulse(): Bool {
-                    if (self.isAlive) {
-                        log("The abomination is still alive and kicking!")
-                        // Emit the respective event
-                        emit monsterStillAlive(name: self.name)
-                    }
-                    else {
-                        log("The freak is dead already!")
-                        // Same here
-                        emit deadMonster(name: self.name)
-                    }
+		pub fun checkPulse(): Bool {
+			if (self.isAlive) {
+				log("The abomination is still alive and kicking!")
+				// Emit the respective event
+				emit monsterStillAlive(name: self.name)
+			}
+			else {
+				log("The freak is dead already!")
+				// Same here
+				emit deadMonster(name: self.name)
+			}
 
-                    return self.isAlive
-                }
-            }
-        }
+			return self.isAlive
+		}
+	}
+}
+```
 
 Transaction code used to trigger the events:
 
-    import TryingEvents from 0x01
+```javascript
+import TryingEvents from 0x01
 
-    transaction() {
-    prepare(signer: AuthAccount) {
-    }
+transaction() {
+prepare(signer: AuthAccount) {
+}
 
-    execute{
-        // Create Frank, the Frankenstein
-        log("Assembling a monster out of spare parts from the local cemetery...")
-        let frankTheFreak <- TryingEvents.createMonstrosity(name: "Frank")
+execute{
+	// Create Frank, the Frankenstein
+	log("Assembling a monster out of spare parts from the local cemetery...")
+	let frankTheFreak <- TryingEvents.createMonstrosity(name: "Frank")
 
-        // Check if its alive, triggering one of the events and setting the internal boolean to a different value to trigger the next event
-        if (frankTheFreak.checkPulse()) {
-            log("It's alive! I'm bored now... Going to kill it...")
-            // If it is, kill it
-            frankTheFreak.killTheAbomination()
+	// Check if its alive, triggering one of the events and setting the internal boolean to a different value to trigger the next event
+	if (frankTheFreak.checkPulse()) {
+		log("It's alive! I'm bored now... Going to kill it...")
+		// If it is, kill it
+		frankTheFreak.killTheAbomination()
 
-            // Check the pulse once again to trigger the other event
-            if (frankTheFreak.checkPulse()) {
-                log("Unable to kill the freak.. somehow. Burn it to a crisp then!")
-            }
-            else {
-                log(frankTheFreak.name.concat(" is dead. Going to set fire to the corpse..."))
-            }
-            }
-            else {
-                log("The monster is already dead. All its left is to get rid of the cadaver...")
-            }
-            
-            // In either case, the Resource needs to be destroyed
-            destroy frankTheFreak
-            log("Experiment complete!")
-        }
-    }
+		// Check the pulse once again to trigger the other event
+		if (frankTheFreak.checkPulse()) {
+			log("Unable to kill the freak.. somehow. Burn it to a crisp then!")
+		}
+		else {
+			log(frankTheFreak.name.concat(" is dead. Going to set fire to the corpse..."))
+		}
+		}
+		else {
+			log("The monster is already dead. All its left is to get rid of the cadaver...")
+		}
+		
+		// In either case, the Resource needs to be destroyed
+		destroy frankTheFreak
+		log("Experiment complete!")
+	}
+}
+```
 
 
 Q3.
 
 Contract code with <code>pre</code>, <code>post</code> and <code>before</code> usage:
 
-    pub contract TryingEvents{
-        // A simple event to be triggered once a Resource gets destroyed
-        pub event deadMonster(name: String)
-        pub event monsterStillAlive(name: String)
-        priv let maxName: UInt64
+```javascript
+pub contract TryingEvents{
+	// A simple event to be triggered once a Resource gets destroyed
+	pub event deadMonster(name: String)
+	pub event monsterStillAlive(name: String)
+	priv let maxName: UInt64
 
 
-        pub fun createMonstrosity(name: String): @Frankenstein {
+	pub fun createMonstrosity(name: String): @Frankenstein {
 
-            pre{
-                name.length > 0 && name.length < 10: 
-                    "The monster cannot hold long names. Please don't use more than ".concat(self.maxName.toString()).concat(" characters")
-            }
+		pre{
+			name.length > 0 && name.length < 10: 
+				"The monster cannot hold long names. Please don't use more than ".concat(self.maxName.toString()).concat(" characters")
+		}
 
-            post {
-                result.isAlive: "Oops... something went very wrong there... the monster did not survive the operation..."
-            }
-            return <- create Frankenstein(name: name)
-        }
+		post {
+			result.isAlive: "Oops... something went very wrong there... the monster did not survive the operation..."
+		}
+		return <- create Frankenstein(name: name)
+	}
 
-        init() {
-            self.maxName = 10
-        }
+	init() {
+		self.maxName = 10
+	}
 
-        pub resource Frankenstein{
-            pub var name: String
-            pub var isAlive: Bool
+	pub resource Frankenstein{
+		pub var name: String
+		pub var isAlive: Bool
 
-            init(name: String) {
-                self.name = name
-                self.isAlive = true
-            }
+		init(name: String) {
+			self.name = name
+			self.isAlive = true
+		}
 
-            pub fun killTheAbomination() {
-                self.isAlive = false
-            }
+		pub fun killTheAbomination() {
+			self.isAlive = false
+		}
 
-            // Simple renaming function to implement 'before'
-            pub fun changeName(newName: String) {
-                pre {
-                    newName.length > 0: "The monster cannot remain nameless!"
-                }
+		// Simple renaming function to implement 'before'
+		pub fun changeName(newName: String) {
+			pre {
+				newName.length > 0: "The monster cannot remain nameless!"
+			}
 
-                post {
-                    before(self.name) != self.name: "The new name is identical to the previous one! The monster is getting confused..."
-                }
+			post {
+				before(self.name) != self.name: "The new name is identical to the previous one! The monster is getting confused..."
+			}
 
-                self.name = newName
-            }
+			self.name = newName
+		}
 
-            pub fun checkPulse(): Bool {
-                if (self.isAlive) {
-                    log("The abomination is still alive and kicking!")
-                    // Emit the respective event
-                    emit monsterStillAlive(name: self.name)
-                }
-                else {
-                    log("The freak is dead already!")
-                    // Same here
-                    emit deadMonster(name: self.name)
-                }
+		pub fun checkPulse(): Bool {
+			if (self.isAlive) {
+				log("The abomination is still alive and kicking!")
+				// Emit the respective event
+				emit monsterStillAlive(name: self.name)
+			}
+			else {
+				log("The freak is dead already!")
+				// Same here
+				emit deadMonster(name: self.name)
+			}
 
-                return self.isAlive
-            }
-        }
-    }
+			return self.isAlive
+		}
+	}
+}
+```
 
 Q4.
 
 Contract code with commentaries answering the questions posed:
 
-    pub contract Test {
-    pub fun numberOne(name: String) {
-        pre {
-            // The pre-condition succeeds for "Jacob" since "Jacob".length == 5, therefore the pre-condition evaluates to 'true'.
-            // The execution goes through and the log instruction occurs
-            name.length == 5: "This name is not cool enough."
-        }
-        log(name)
-    }
+```javascript
+pub contract Test {
+	pub fun numberOne(name: String) {
+	pre {
+		// The pre-condition succeeds for "Jacob" since "Jacob".length == 5, therefore the pre-condition evaluates to 'true'.
+		// The execution goes through and the log instruction occurs
+		name.length == 5: "This name is not cool enough."
+	}
+	log(name)
+}
 
-    pub fun numberTwo(name: String): String {
-        pre {
-            name.length >= 0: "You must input a valid name."
-        }
-        post {
-            result == "Jacob Tucker": result.concat(" :I don't like this name at all")
-        }
+pub fun numberTwo(name: String): String {
+	pre {
+		name.length >= 0: "You must input a valid name."
+	}
+	post {
+		result == "Jacob Tucker": result.concat(" :I don't like this name at all")
+	}
 
-        /* 
-        * Both pre and post conditions evaluate to 'true':
-        * "Jacob".length == 5 (> 0) so the pre-condition is true
-        * The result is going to be "Jacob Tucker", therefore evaluating the post condition to true also.
-        * Both conditions are true, so there is no flow interruption. The function returns "Jacob Tucker" back  
-        */
-        return name.concat(" Tucker")
-    }
+	/* 
+	* Both pre and post conditions evaluate to 'true':
+	* "Jacob".length == 5 (> 0) so the pre-condition is true
+	* The result is going to be "Jacob Tucker", therefore evaluating the post condition to true also.
+	* Both conditions are true, so there is no flow interruption. The function returns "Jacob Tucker" back  
+	*/
+	return name.concat(" Tucker")
+}
 
-    pub resource TestResource {
-        pub var number: Int
+pub resource TestResource {
+	pub var number: Int
 
-        pub fun numberThree(): Int {
-            post {
-                // In this case, the result is the original self.number plus one, therefore this post condition also evaluates to true,
-                // which allows for the function to execute completely
-                before(self.number) == result + 1
-            }
-                self.number = self.number + 1
+	pub fun numberThree(): Int {
+		post {
+			// In this case, the result is the original self.number plus one, therefore this post condition also evaluates to true,
+			// which allows for the function to execute completely
+			before(self.number) == result + 1
+		}
+			self.number = self.number + 1
 
-                // The self.number being returned is the initial value plus 1. Assuming a single execution right after the resource
-                // creation (which sets self.number = 0), the self.number should be 1 after this run.
-                return self.number
-            }
+			// The self.number being returned is the initial value plus 1. Assuming a single execution right after the resource
+			// creation (which sets self.number = 0), the self.number should be 1 after this run.
+			return self.number
+		}
 
-            init() {
-                self.number = 0
-            }
+		init() {
+			self.number = 0
+		}
 
-        }
+	}
 
-    }
+}
+```
