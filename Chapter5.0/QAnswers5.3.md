@@ -143,7 +143,7 @@ pub fun main(depositAddress: Address) {
 ```
 
 * Running this script returns:
-* 
+
 ![image](https://user-images.githubusercontent.com/39467168/170889653-e46c32da-6136-4e69-83b9-45a34031bd38.png)
 
 As intended. My job here is done!
