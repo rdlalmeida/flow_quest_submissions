@@ -26,7 +26,7 @@ pub fun borrowAuthNFT(id: UInt64): &CryptoPoops.NFT {
 }
 ```
 
-* Transaction code to create and link and empty CryptoPoops.Collection (to expose the borrowAuthNFT function from above, which is only bounded
+* Transaction code to create and link an empty CryptoPoops.Collection (to expose the borrowAuthNFT function from above, which is only bounded
 to the CryptoPoops contract).
 
 ```javascript
@@ -64,7 +64,7 @@ import NonFungibleToken from 0x02
 transaction(depositAccount: Address, name: String, favouriteFood: String, luckyNumber: Int) {
     prepare(signer: AuthAccount) {
         // Borrow the NFT Minter from account 0x01 (where the CryptoPoops contract was deployed. Its initiation
-        // created a Minter resource in /storage/Minter
+        // created a Minter resource in /storage/Minter)
         let minterRef = signer.borrow<&CryptoPoops.Minter>(from: /storage/Minter) ?? panic("There's no Minter resource in storage!")
 
         // Create the NFT to deposit into account 0x03 (where I've create a Collection with the previous transaction)
@@ -88,4 +88,64 @@ transaction(depositAccount: Address, name: String, favouriteFood: String, luckyN
     }
 }
 ```
+
+* Created a pair of test NFTs into account 0x03:
+
+![image](https://user-images.githubusercontent.com/39467168/170889690-cea6a342-b22d-4198-bf16-b192943f0371.png)
+
+* Script code to borrow an auth reference to a CryptoPoops.NFT using the borrowAuthNFT function:
+
+```javascript
+// Script to retrieve a downcast NFT from account 0x03 and print out the internal parameters
+// exposed only in the specific CryptoPoops.NFT type
+
+import CryptoPoops from 0x01
+import NonFungibleToken from 0x02
+
+pub fun main(depositAddress: Address) {
+  // Get the Collection reference from account 0x03 using a Capability. This should be a '&CryptoPoops.Collection' type instead of
+  // '&NonFungibleToken.Collection' because the resource was already downcast after creation
+  let collectionReference: &CryptoPoops.Collection = getAccount(depositAddress).getCapability<&CryptoPoops.Collection>(/public/MyCollection).borrow() 
+          ?? panic("Unable to borrow a &CryptoPoops.Collection from address ".concat(depositAddress.toString()))
+  
+  // Use the collection reference to retrive the array of NFT ids, check if it is not empty and retrieve the id of the last element to borrow its auth reference
+  let nftIds = collectionReference.getIDs()
+
+  // Panic if the collection retrieved is still empty
+  if (nftIds.length == 0) {
+    panic(
+      "Got a valid but empty Collection from address "
+      .concat(depositAddress.toString())
+      .concat(". Cannot proceed!")
+    )
+  }
+  else {
+    // In this case, print out how many NFTs exist in the collection retrieved
+    log(
+      "Got a reference to a Collection with "
+      .concat(nftIds.length.toString())
+      .concat(" NFT in it")
+      )
+  }
+  // Use the Collection reference to access the borrowAuthNFT function to retrieve a downcast reference to the last NFT in the Collection
+  let poopNFTRef = collectionReference.borrowAuthNFT(id: nftIds[nftIds.length - 1])
+
+  // All good. Use the NFT reference to log the internal fields exposed only in the specific NFT type
+  log("Got an NFT named '"
+  .concat(poopNFTRef.name)
+  .concat("', whose favorite food is ")
+  .concat(poopNFTRef.favouriteFood)
+  .concat(" and feels lucky around number ")
+  .concat(poopNFTRef.luckyNumber.toString())
+  )
+
+}
+```
+
+* Running this script returns:
+* 
+![image](https://user-images.githubusercontent.com/39467168/170889653-e46c32da-6136-4e69-83b9-45a34031bd38.png)
+
+As intended. My job here is done!
+
 
