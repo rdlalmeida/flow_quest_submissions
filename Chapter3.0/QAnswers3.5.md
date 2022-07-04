@@ -30,6 +30,6 @@ And now for the functions
 
 || Area 1 | Area 2 | Area 3 | Area 4 |
 |:--|:-:|:-:|:-:|:-:|
-|publicFunc()   | &#x2713; | &#x2717; | &#x2713; | &#x2713; |
-|contractFunc() | &#x2713; | &#x2717; | &#x2713; | &#x2717; |
+|publicFunc()   | &#x2713; | &#x2713; | &#x2713; | &#x2713; |
+|contractFunc() | &#x2713; | &#x2713; | &#x2713; | &#x2717; |
 |privateFunc()  | &#x2713; | &#x2717; | &#x2717; | &#x2717; |
