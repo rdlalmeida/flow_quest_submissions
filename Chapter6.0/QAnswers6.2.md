@@ -222,3 +222,7 @@ pub fun main(): UInt64 {
 * Command to execute this script in mainnet:
 <code>flow scripts execute ./flow/cadence/00/scripts/readGoatedGoatsTotalSupply.cdc --network mainnet</code>
 
+* Execution result:
+![image](https://user-images.githubusercontent.com/39467168/183252239-2f46aab1-28d1-4a31-a0be-f3f8e1cce9ff.png)
+
+
