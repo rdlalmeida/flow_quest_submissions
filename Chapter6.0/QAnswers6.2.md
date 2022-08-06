@@ -206,3 +206,19 @@ pub fun main(depositAddress: Address): String {
 
 * Command to run this script
 <code>flow scripts execute ./flow/cadence/00/scripts/retrieveNFTfromCollection.cdc --network testnet</code>
+
+* Q5 - Script to read the totalSupply from the GoatedGoats:
+
+```cadence
+// readGoatedGoatsTotalSupply.cdc
+
+import GoatedGoats from 0x2068315349bdfce5
+
+pub fun main(): UInt64 {
+    return GoatedGoats.totalSupply
+}
+```
+
+* Command to execute this script in mainnet:
+<code>flow scripts execute ./flow/cadence/00/scripts/readGoatedGoatsTotalSupply.cdc --network mainnet</code>
+
