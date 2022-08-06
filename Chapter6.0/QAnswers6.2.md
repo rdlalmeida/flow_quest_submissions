@@ -343,6 +343,4 @@ pub fun main(collectionAddress: Address): TopShot.TopShotMomentMetadataView {
 * Output returned from this script:
 ![image](https://user-images.githubusercontent.com/39467168/183265286-d7bcf392-57bd-4f1d-8417-e44864ec3a34.png)
 
-That's my Series 4 Troy Murphy III Common NFT metadata. I got that one in my last pack.
-
-  
+That's my Series 4 Trey Murphy III Common NFT metadata. I got that one in my last pack.
