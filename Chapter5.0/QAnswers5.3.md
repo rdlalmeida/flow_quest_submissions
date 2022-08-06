@@ -20,7 +20,7 @@ NOTE: Omitted the rest of the unaltered contract code for simplicity sake
 // detect any differences but this syntax inconsistency may lead to confusion
 // The algorithm works in both cases, so yeah...
 pub fun borrowAuthNFT(id: UInt64): &CryptoPoops.NFT {
-    let reference = &self.ownedNFTs[id] as auth &NonFungibleToken.NFT
+    let reference = (&self.ownedNFTs[id] as auth &NonFungibleToken.NFT?)!
 
     return reference as! &NFT
 }

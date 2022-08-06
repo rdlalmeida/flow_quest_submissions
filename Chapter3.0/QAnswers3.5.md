@@ -24,7 +24,7 @@ Area 4:
 || Variable a | Variable b | Variable c | Variable d |
 |:-----------|:----------:|:----------:|:----------:|:----------:|
 | Read | &#x2713; | &#x2713; | &#x2717; | &#x2717; |
-| Write| &#x2713; | &#x2717; | &#x2717; | &#x2717; |
+| Write| &#x2717; | &#x2717; | &#x2717; | &#x2717; |
 
 And now for the functions
 

@@ -204,8 +204,15 @@ pub resource TestResource {
 
 	pub fun numberThree(): Int {
 		post {
-			// In this case, the result is the original self.number plus one, therefore this post condition also evaluates to true,
-			// which allows for the function to execute completely
+			/*
+				In this case, the resource gets initialized with self.number = 0. When this function runs, we first increment and set the self.number, i.e.,
+				self.number = self.number + 1 = 0 + 1 = 1. Just before running the post condition, we have self.number = 1, which is also the "result". 
+				So when the post condition is run, we are checking if the number BEFORE the function was run is equal to the current result plus 1. 
+				before(self.number) is 0 since this function only increments it by 1. "result" on the other hand is 1, which is the initial number already
+				incremented by one. So, essentially the post condition is evaluating if 0 (before(self.number)) equals to 1 (result) + 1, i.e., if 0 == 2, 
+				which is obviously false. This triggers the post condition and the results from numberThree are reverted. Nothing gets logger nor returned 
+				and self.number remains 0.
+			*/
 			before(self.number) == result + 1
 		}
 			self.number = self.number + 1
