@@ -51,8 +51,8 @@ pub contract messingWithResources{
 
 	// Initialization function
 	init() {
-	self.petArray <- []
-	self.petDict <- {}
+		self.petArray <- []
+		self.petDict <- {}
 	}
 }
 ```
